@@ -1,5 +1,7 @@
 package io.github.shotix.customwhitelist;
 
+import org.bukkit.BanList;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -24,18 +26,14 @@ public class JoinCommand implements CommandExecutor {
                 showHelp((Player) sender);
             } else {
                 String passwordInput = args[0];
-                if (passwordInput.matches(joinPassword)) {
-                    HandleFiles.putNameOnWhitelist(sender.getName());
-                    return true;
-                }
-                try {
-                    invalidPassword(sender);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                if (passwordInput.matches(joinPassword)) HandleFiles.putNameOnWhitelist(sender.getName());
+            }
+            try {
+                invalidPassword(sender);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
-
         return false;
     }
 
@@ -47,8 +45,12 @@ public class JoinCommand implements CommandExecutor {
         int triesRemaining = HandleFiles.handleJoinTries(c.getName());
 
         if (triesRemaining >= 0) c.sendMessage(ChatColor.RED + "Invalid Password! You have " + triesRemaining + " remaining.");
-        else {
+        else tooManyPasswordTries(c);
+    }
 
-        }
+    private void tooManyPasswordTries(CommandSender c) {
+        Bukkit.getBanList(BanList.Type.NAME).addBan(c.getName(), "Too many wrong join password inputs\nPlease write an administrator to appeal!", null, "Server");
+        ((Player) c).kickPlayer("You have been banned from this server because of too many invalid Password inputs.\nPlease write an administrator to appeal!");
+        c.sendMessage(ChatColor.RED + "Too many wrong tries. Your name has been send to the User-BlackList");
     }
 }

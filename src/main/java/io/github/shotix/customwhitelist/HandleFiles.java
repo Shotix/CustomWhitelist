@@ -40,12 +40,11 @@ public class HandleFiles {
 
     public static boolean putNameOnWhitelist(String playerName) {
         Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "whitelist add " + playerName);
-
         return true;
     }
 
     public static int handleJoinTries(String playerName) throws IOException {
-        int triesRemaining = -1;
+        int triesRemaining = 1;
 
         try {
             FileReader fr = new FileReader(playerJoinTriesLocation);
