@@ -1,0 +1,14 @@
+name: CustomWhitelist
+version: '${project.version}'
+main: io.github.shotix.customwhitelist.CustomWhitelist
+api-version: 1.15
+authors: [ Sh0tix ]
+description: A plugin with which every player is able to join the server but needs to enter a password in order to be able to play on it
+website: https://github.com/Shotix/CustomWhitelist
+
+commands:
+  join:
+    description: "Enter the corret password to be able to play on the server"
+
+  updateStatus:
+    description: "Enter this command to update your status"
