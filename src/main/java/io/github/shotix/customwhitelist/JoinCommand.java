@@ -26,7 +26,11 @@ public class JoinCommand implements CommandExecutor {
                 showHelp((Player) sender);
             } else {
                 String passwordInput = args[0];
-                if (passwordInput.matches(joinPassword)) HandleFiles.putNameOnWhitelist(sender.getName());
+                if (passwordInput.matches(joinPassword)){
+                    HandleFiles.putNameOnWhitelist(sender.getName());
+                    sender.sendMessage(ChatColor.GREEN + "You have successfully registered yourself\nPlease use the \"/updatestatus\" command to update your status");
+                }
+                return true;
             }
             try {
                 invalidPassword(sender);
@@ -51,6 +55,5 @@ public class JoinCommand implements CommandExecutor {
     private void tooManyPasswordTries(CommandSender c) {
         Bukkit.getBanList(BanList.Type.NAME).addBan(c.getName(), "Too many wrong join password inputs\nPlease write an administrator to appeal!", null, "Server");
         ((Player) c).kickPlayer("You have been banned from this server because of too many invalid Password inputs.\nPlease write an administrator to appeal!");
-        c.sendMessage(ChatColor.RED + "Too many wrong tries. Your name has been send to the User-BlackList");
     }
 }

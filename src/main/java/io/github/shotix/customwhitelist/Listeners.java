@@ -1,6 +1,7 @@
 package io.github.shotix.customwhitelist;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
@@ -30,8 +31,10 @@ public class Listeners implements Listener {
             Bukkit.shutdown();
         }
 
-        if (!playersOnWhitelist.contains(playerJoinEvent.getPlayer().getName()))
+        if (!playersOnWhitelist.contains(playerJoinEvent.getPlayer().getName())) {
             HandlePlayerNotOnWhitelist.initialiseHandling(playerJoinEvent);
+            playerJoinEvent.getPlayer().sendMessage(ChatColor.YELLOW + "Welcome to the server!\nYou are currently not whitelisted on this server\nIn order to achieve this, please use the " + ChatColor.GREEN + "\"/join [password]\"" + ChatColor.YELLOW + " command to register yourself\"\n");
+        }
     }
 
     @EventHandler
