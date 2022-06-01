@@ -8,7 +8,7 @@ website: https://github.com/Shotix/CustomWhitelist
 
 commands:
   join:
-    description: "Enter the corret password to be able to play on the server"
+    description: "Enter the correct password to be able to play on the server"
 
   updateStatus:
     description: "Enter this command to update your status"

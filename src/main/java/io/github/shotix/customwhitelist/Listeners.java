@@ -26,7 +26,7 @@ public class Listeners implements Listener {
         playersOnWhitelist = playersOnWhitelist + HandleFiles.openWhitelist();
 
         if (playersOnWhitelist == "WhitelistNotFound") {
-            Bukkit.broadcastMessage("Es konnte keine Whitelist gefunden werden. Der Server wird in 10 Sekunden beendet und wenden Sie sich an einen Administrator des Servers!");
+            Bukkit.broadcastMessage("Es konnte keine Whitelist gefunden werden. Der Server wird in 10 Sekunden beendet. Wenden Sie sich an einen Administrator des Servers!");
             TimeUnit.SECONDS.sleep(10);
             Bukkit.shutdown();
         }
@@ -34,12 +34,14 @@ public class Listeners implements Listener {
         if (!playersOnWhitelist.contains(playerJoinEvent.getPlayer().getName())) {
             HandlePlayerNotOnWhitelist.initialiseHandling(playerJoinEvent);
             playerJoinEvent.getPlayer().sendMessage(ChatColor.YELLOW + "Welcome to the server!\nYou are currently not whitelisted on this server\nIn order to achieve this, please use the " + ChatColor.GREEN + "\"/join [password]\"" + ChatColor.YELLOW + " command to register yourself\"\n");
+        } else if (!HandleFiles.isPlayerOnJoinList(playerJoinEvent.getPlayer().getName())) {
+            playerJoinEvent.getPlayer().sendMessage(ChatColor.YELLOW + "You are currently on the whitelist but you are is still not verified.\nPlease use the " + ChatColor.GREEN + "/updatestatus" + ChatColor.YELLOW + " command to update your status!");
         }
     }
 
     @EventHandler
     public void event(PlayerMoveEvent playerMoveEvent) {
-        if (!playersOnWhitelist.contains(playerMoveEvent.getPlayer().getName()))
+        if (!playersOnWhitelist.contains(playerMoveEvent.getPlayer().getName()) || !HandleFiles.isPlayerOnJoinList(playerMoveEvent.getPlayer().getName()))
             HandlePlayerNotOnWhitelist.blockMovement(playerMoveEvent);
     }
 }

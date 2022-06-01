@@ -11,11 +11,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class JoinCommand implements CommandExecutor {
 
-    private String playersOnWhitelist = HandleFiles.openWhitelist();
-    private static String joinPassword = "2InchWheeler";
+    private final static String joinPassword = "2InchWheeler";
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        String playersOnWhitelist = HandleFiles.openWhitelist();
         if (!(sender instanceof Player) || playersOnWhitelist.contains(sender.getName())) {
             sender.sendMessage("Only valid players can run this command!");
             return false;
