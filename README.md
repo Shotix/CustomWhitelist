@@ -25,6 +25,8 @@ If you have used the `/join [password]` command you can use the `/updateStatus` 
 
 ## Author
 
+**Marvin Moritz**
+  
 **Tim Niklas Tenger**
 
 - [GitHub Profile](https://github.com/Shotix "GitHub Profile")
