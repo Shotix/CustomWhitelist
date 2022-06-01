@@ -29,13 +29,13 @@ public class JoinCommand implements CommandExecutor {
                 if (passwordInput.matches(joinPassword)){
                     HandleFiles.putNameOnWhitelist(sender.getName());
                     sender.sendMessage(ChatColor.GREEN + "You have successfully registered yourself\nPlease use the \"/updatestatus\" command to update your status");
+                    return true;
                 }
-                return true;
-            }
-            try {
-                invalidPassword(sender);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                try {
+                    invalidPassword(sender);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
         return false;
@@ -47,7 +47,6 @@ public class JoinCommand implements CommandExecutor {
 
     private void invalidPassword(CommandSender c) throws IOException {
         int triesRemaining = HandleFiles.handleJoinTries(c.getName());
-
         if (triesRemaining >= 0) c.sendMessage(ChatColor.RED + "Invalid Password! You have " + triesRemaining + " remaining.");
         else tooManyPasswordTries(c);
     }

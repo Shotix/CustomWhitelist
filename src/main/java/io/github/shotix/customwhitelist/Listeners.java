@@ -42,12 +42,4 @@ public class Listeners implements Listener {
         if (!playersOnWhitelist.contains(playerMoveEvent.getPlayer().getName()))
             HandlePlayerNotOnWhitelist.blockMovement(playerMoveEvent);
     }
-
-    @EventHandler
-    public void event(PlayerDeathEvent playerDeathEvent) {
-        if (playerDeathEvent.getEntity().getKiller() instanceof Player)
-            HandlePlayerDeaths.hasBeenKilledByPlayer(playerDeathEvent.getEntity(), playerDeathEvent.getEntity().getKiller());
-        else if (playerDeathEvent.getEntity().getKiller() instanceof Entity)
-            HandlePlayerDeaths.hasBeenKilledByEntity(playerDeathEvent.getEntity(), playerDeathEvent.getEntity().getKiller());
-    }
 }

@@ -6,7 +6,6 @@ import java.io.*;
 
 public class HandleFiles {
 
-    //FIXME: FileLocation currently static. The Whitelist needs to be found in a dynamic way!
     private static String whitelistLocation = "whitelist.json";
     private static String playerJoinTriesLocation = "playerJoinTries.json";
     private static String whitelistedPlayerNames = "";
@@ -82,12 +81,11 @@ public class HandleFiles {
             writer.close();
             handleJoinTries(playerName);
         } catch (NumberFormatException numberFormatException) {
-            // TODO: Handle no int found in numberOfTriesAlreadyDoneString
+            // TODO: Handle NumberFormatException
         } catch (IOException ioException) {
             // TODO: Handle IOException
         }
 
         return triesRemaining;
     }
-
 }

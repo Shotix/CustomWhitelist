@@ -24,7 +24,6 @@ public class UpdateStatusCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         openWhitelist();
-        Bukkit.broadcastMessage(playersOnWhitelist);
         if (!(sender instanceof Player) || !(playersOnWhitelist.contains(sender.getName()))) {
             sender.sendMessage(ChatColor.YELLOW + "You are not on the whitelist. Please type /join [password] to register yourself!");
             return false;
