@@ -9,8 +9,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-
 public class JoinCommand implements CommandExecutor {
 
     private String playersOnWhitelist = HandleFiles.openWhitelist();
