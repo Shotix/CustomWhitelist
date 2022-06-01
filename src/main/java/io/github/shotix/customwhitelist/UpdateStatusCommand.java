@@ -19,25 +19,24 @@ public class UpdateStatusCommand implements CommandExecutor {
     private String openWhitelist() {
         return playersOnWhitelist = HandleFiles.openWhitelist();
     }
+    private boolean openPlayerJoinList(String playerName) {
+        return HandleFiles.isPlayerOnJoinList(playerName);
+    }
 
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         openWhitelist();
-        if (!(sender instanceof Player) || !(playersOnWhitelist.contains(sender.getName()))) {
-            sender.sendMessage(ChatColor.YELLOW + "You are not on the whitelist. Please type /join [password] to register yourself!");
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("Only players can run this command!");
+            return false;
+        } else if (!(openWhitelist().contains(sender.getName()))) {
+            sender.sendMessage(ChatColor.YELLOW + "Your name is currently not on the whitelist.\n Please use the " + ChatColor.GREEN + "/join [password]" + ChatColor.YELLOW + " to get added to the whitelist!");
             return false;
         }
-
-        sender.sendMessage(ChatColor.GREEN + "You are now verified.");
-        try {
-            TimeUnit.SECONDS.sleep(1);
-            clearPotionEffects((Player) sender);
-            ((Player) sender).setGameMode(GameMode.SURVIVAL);
-            ((Player) sender).kickPlayer("You will now be able to play on the Server. Have fun!");
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        clearPotionEffects((Player) sender);
+        ((Player) sender).setGameMode(GameMode.SURVIVAL);
+        ((Player) sender).kickPlayer(ChatColor.GREEN + "You are now verified and will be able to play on the Server. Have fun!");
         return true;
     }
 

@@ -1,12 +1,6 @@
-FIXME:
-    - Player is able to manually reconnect without having used "/updateStatus"
-        --> Whats happening:
-            Player is in spectator mode with the blindness effect
-        --> Possible solution:
-            Give the player a certain status (notValid). This status can be implemented in the playerJoinTimes.json File
-            After using "/updateStatus" the status could be updated to (valid). After that the counter in the playerJoinTimes will be reset to 0;
-        --> Possible simplifications:
-            No need to check if the player is on the whitelist. A simple check in the playerJoinTries file would be enough
+TODO:
+    - Player is now not able to be transferred from the "newPlayer" Status to the "verified" status
+        --> Implementation still needed
 
 TODO Exception Handling:
     - Handle NumberFormatException (HandleFiles.java)

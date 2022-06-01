@@ -1,6 +1,7 @@
 package io.github.shotix.customwhitelist;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.io.*;
 
@@ -38,6 +39,33 @@ public class HandleFiles {
         }
     }
 
+    public static boolean isPlayerOnJoinList(String playerName) {
+        try {
+            FileReader fr = new FileReader(playerJoinTriesLocation);
+            BufferedReader br = new BufferedReader(fr);
+
+            String line = br.readLine();
+            while (line != null) {
+                if (line.contains(playerName)) {
+                    br.readLine();
+                    if (br.readLine().contains("verified")) {
+                        fr.close();
+                        br.close();
+                        return true;
+                    }
+                }
+                line = br.readLine();
+            }
+            br.close();
+            fr.close();
+        } catch (FileNotFoundException ignore) {
+            // Ignored
+        } catch (IOException ioException) {
+            //TODO: Handle IOException
+        }
+        return false;
+    }
+
     public static void putNameOnWhitelist(String playerName) {
         Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "whitelist add " + playerName);
     }
@@ -60,9 +88,6 @@ public class HandleFiles {
                     String cString = line.replace("\"tries\": \"", "");
                     cString = cString.replaceAll("\",", "");
                     cString = cString.replaceAll("\\s+", "");
-
-                    Bukkit.broadcastMessage(cString);
-                    Bukkit.broadcastMessage(line);
 
                     int cInt = Integer.parseInt(cString);
 
@@ -119,6 +144,8 @@ public class HandleFiles {
                 line = br.readLine();
             }
 
+            br.close();
+            fr.close();
         } catch (FileNotFoundException fileNotFoundException) {
 
         } catch (IOException e) {
@@ -143,6 +170,8 @@ public class HandleFiles {
 
             template = template.replace("putNameHere", name);
 
+            br.close();
+            fr.close();
         } catch (FileNotFoundException fileNotFoundException) {
 
         } catch (IOException ioException) {
@@ -200,7 +229,15 @@ public class HandleFiles {
             br.close();
             fr.close();
         } catch (IOException e) {
-
+            throw new RuntimeException(e);
         }
+    }
+
+    public static void updatePlayerStatusToOnWhitelist(Player player) {
+
+    }
+
+    public static void updatePlayerStatusToVerified(Player player) {
+
     }
 }
