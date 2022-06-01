@@ -7,6 +7,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
@@ -25,29 +26,29 @@ public class JoinCommand implements CommandExecutor {
             if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
                 showHelp((Player) sender);
             } else {
+                boolean isPlayerOnTries = HandleFiles.isPlayerOnTries(sender.getName());
+
+                if (!isPlayerOnTries) HandleFiles.handlePutPlayerOnTries(sender.getName());
+
                 String passwordInput = args[0];
                 if (passwordInput.matches(joinPassword)){
                     HandleFiles.putNameOnWhitelist(sender.getName());
                     sender.sendMessage(ChatColor.GREEN + "You have successfully registered yourself\nPlease use the \"/updatestatus\" command to update your status");
                     return true;
                 }
-                try {
-                    invalidPassword(sender);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                invalidPassword(sender);
             }
         }
         return false;
     }
 
-    private void showHelp(Player p) {
+    private void showHelp(@NotNull Player p) {
         p.sendMessage("HELP MENU NOT AVAILABLE YET");
     }
 
-    private void invalidPassword(CommandSender c) throws IOException {
+    private void invalidPassword(CommandSender c) {
         int triesRemaining = HandleFiles.handleJoinTries(c.getName());
-        if (triesRemaining >= 0) c.sendMessage(ChatColor.RED + "Invalid Password! You have " + triesRemaining + " remaining.");
+        if (triesRemaining >= 1) c.sendMessage(ChatColor.RED + "Invalid Password! You have " + triesRemaining + " remaining.");
         else tooManyPasswordTries(c);
     }
 

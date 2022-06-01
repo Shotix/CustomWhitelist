@@ -6,7 +6,7 @@
 
     <groupId>io.github.Shotix</groupId>
     <artifactId>CustomWhitelist</artifactId>
-    <version>0.5</version>
+    <version>0.6</version>
     <packaging>jar</packaging>
 
     <name>CustomWhitelist</name>
@@ -66,6 +66,12 @@
             <artifactId>bukkit</artifactId>
             <version>1.15.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

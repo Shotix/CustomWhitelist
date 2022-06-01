@@ -6,10 +6,11 @@ import java.io.*;
 
 public class HandleFiles {
 
-    private static String whitelistLocation = "whitelist.json";
-    private static String playerJoinTriesLocation = "playerJoinTries.json";
+    private final static String whitelistLocation = "whitelist.json";
+    private final static String playerJoinTriesLocation = "playerJoinTries.json";
     private static String whitelistedPlayerNames = "";
-    private static String wLNW = "WhitelistNotFound";
+    private final static String wLNW = "WhitelistNotFound";
+    private final static String templateLocation = "playerJoinTriesTemplate.json";
 
 
     public static String openWhitelist() {
@@ -37,12 +38,11 @@ public class HandleFiles {
         }
     }
 
-    public static boolean putNameOnWhitelist(String playerName) {
+    public static void putNameOnWhitelist(String playerName) {
         Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "whitelist add " + playerName);
-        return true;
     }
 
-    public static int handleJoinTries(String playerName) throws IOException {
+    public static int handleJoinTries(String playerName) {
         int triesRemaining = 1;
 
         try {
@@ -57,9 +57,15 @@ public class HandleFiles {
                 if (line.contains(playerName)) {
                     line = br.readLine();
 
-                    String cString = line.substring(17);
-                    cString = cString.replaceAll("\"", "");
+                    String cString = line.replace("\"tries\": \"", "");
+                    cString = cString.replaceAll("\",", "");
+                    cString = cString.replaceAll("\\s+", "");
+
+                    Bukkit.broadcastMessage(cString);
+                    Bukkit.broadcastMessage(line);
+
                     int cInt = Integer.parseInt(cString);
+
                     line = line.replace(Integer.toString(cInt), Integer.toString(cInt + 1));
                     content = content + line + System.lineSeparator();
                     triesRemaining = 3 - cInt;
@@ -74,18 +80,127 @@ public class HandleFiles {
             br.close();
             fr.close();
         } catch (FileNotFoundException fileNotFoundException) {
-            File file = new File(playerJoinTriesLocation);
-            BufferedWriter writer = new BufferedWriter(new FileWriter(playerJoinTriesLocation));
-            writer.write("[]");
+            try {
+                File file = new File(playerJoinTriesLocation);
+                BufferedWriter writer = null;
+                writer = new BufferedWriter(new FileWriter(playerJoinTriesLocation));
+                writer.write("[]");
 
-            writer.close();
-            handleJoinTries(playerName);
+                writer.close();
+                handleJoinTries(playerName);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         } catch (NumberFormatException numberFormatException) {
+            throw new RuntimeException(numberFormatException);
             // TODO: Handle NumberFormatException
         } catch (IOException ioException) {
+            Bukkit.broadcastMessage("IOException");
             // TODO: Handle IOException
         }
-
         return triesRemaining;
+    }
+
+    public static void handlePutPlayerOnTries(String player) {
+        String template = templateHandling(player);
+        int line = findLineWritePlayerToJoinTries();
+        writePlayerToJoinTries(template, line);
+    }
+
+    public static boolean isPlayerOnTries(String player) {
+        try {
+            FileReader fr = new FileReader(playerJoinTriesLocation);
+            BufferedReader br = new BufferedReader(fr);
+
+            String line = br.readLine();
+
+            while (line != null) {
+                if (line.contains(player)) return true;
+                line = br.readLine();
+            }
+
+        } catch (FileNotFoundException fileNotFoundException) {
+
+        } catch (IOException e) {
+
+        }
+        return false;
+    }
+
+    public static String templateHandling(String name) {
+        String template = "";
+
+        try {
+            FileReader fr = new FileReader(templateLocation);
+            BufferedReader br = new BufferedReader(fr);
+
+            String line = br.readLine();
+
+            while (line != null) {
+                template = template + line + System.lineSeparator();
+                line = br.readLine();
+            }
+
+            template = template.replace("putNameHere", name);
+
+        } catch (FileNotFoundException fileNotFoundException) {
+
+        } catch (IOException ioException) {
+
+        }
+        return template;
+    }
+
+    public static int findLineWritePlayerToJoinTries() {
+        int lineCounter = 0;
+        try {
+            FileReader fr = new FileReader(playerJoinTriesLocation);
+            BufferedReader br = new BufferedReader(fr);
+            String line = br.readLine();
+
+            while (line != null) {
+
+                line = br.readLine();
+                lineCounter++;
+            }
+
+            fr.close();
+            br.close();
+        } catch (FileNotFoundException ignore) {
+
+        } catch (IOException e) {
+
+        }
+        return lineCounter;
+    }
+
+    public static void writePlayerToJoinTries(String template, int line) {
+        try {
+            FileReader fr = new FileReader(playerJoinTriesLocation);
+            BufferedReader br = new BufferedReader(fr);
+            String newOutput = "";
+            String newLine = br.readLine();
+
+            while (newLine != null) {
+                newOutput = newOutput + newLine + System.lineSeparator();
+                newLine = br.readLine();
+            }
+
+            FileWriter writer = new FileWriter(playerJoinTriesLocation);
+
+            if (line == 1) {
+                newOutput = newOutput.replace("]", System.lineSeparator() + template) + "]";
+            }
+            else {
+                newOutput = newOutput.replace("[", "[" + System.lineSeparator() + template);
+            }
+
+            writer.write(newOutput);
+            writer.close();
+            br.close();
+            fr.close();
+        } catch (IOException e) {
+
+        }
     }
 }
