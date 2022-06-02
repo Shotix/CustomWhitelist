@@ -4,7 +4,7 @@
   
 ## Important information
   
-This little project is just a fun project I am currently working on. Please keep in mind that the code is not well structured and only barly working at this state. The current available version (v.09-preRelease) IS working but only if you also download the "playerJoinTriesTemplate.json" file and put it in your server folder. This will be fixed in the 1.0 release version. 
+This little project is just a fun project I am currently working on. Please keep in mind that the code is not well structured and only barly working at this state. The current available version (v.09-preRelease-v4) IS working but the password is currently set to `2InchWheeler` by default. This and the setup commands for administrators will be added in the 1.0 release version.
   
  If you find any bugs or want to help feel free to use the Discussion or Issues page to let me know. I'll try to be as active as I can here.
 
