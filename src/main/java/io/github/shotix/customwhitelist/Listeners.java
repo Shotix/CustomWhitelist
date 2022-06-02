@@ -19,10 +19,14 @@ public class Listeners implements Listener {
             HandleFiles.updateTries(playerJoinEvent.getPlayer().getName(), 0);
             HandleFiles.updatePlayerStatusToNewPlayer(playerJoinEvent.getPlayer().getName());
         }
+        if (playerJoinEvent.getPlayer().isOp() && HandleFiles.getPassword().matches("join")) {
+            playerJoinEvent.getPlayer().sendMessage("The current join password is still the default password " + ChatColor.GRAY + "join.\n" + ChatColor.WHITE + "Please change the password with the " + ChatColor.GOLD + "/customwhitelist setPassword [newPassword]" + ChatColor.WHITE + " command.");
+        }
         if (!HandleFiles.isPlayerOnWhitelist(playerJoinEvent.getPlayer().getName())) {
             HandlePlayerNotOnWhitelist.initialiseHandling(playerJoinEvent);
             playerJoinEvent.getPlayer().sendMessage(ChatColor.YELLOW + "Welcome to the server!\nYou are currently not whitelisted on this server\nIn order to achieve this, please use the " + ChatColor.GOLD + "\"/join [password]\"" + ChatColor.YELLOW + " command to register yourself\"\n");
         } else if (!HandleFiles.isPlayerOnJoinList(playerJoinEvent.getPlayer().getName())) {
+            HandlePlayerNotOnWhitelist.initialiseHandling(playerJoinEvent);
             playerJoinEvent.getPlayer().sendMessage(ChatColor.YELLOW + "You are currently on the whitelist but not verified.\nPlease use the " + ChatColor.GOLD + "/updatestatus" + ChatColor.YELLOW + " command to update your status!");
         }
     }

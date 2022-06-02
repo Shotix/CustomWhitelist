@@ -12,3 +12,6 @@ commands:
 
   updateStatus:
     description: "Enter this command to update your status"
+
+  customWhitelist:
+    description: "Manage the CustomWhitelist plugin via this command"
