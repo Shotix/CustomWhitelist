@@ -15,12 +15,14 @@ public class JoinCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        String playersOnWhitelist = HandleFiles.openWhitelist();
-        if (!(sender instanceof Player) || playersOnWhitelist.contains(sender.getName())) {
-            sender.sendMessage("Only valid players can run this command!");
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(ChatColor.RED + "Only players can run this command!");
             return false;
+        } else if (HandleFiles.isPlayerOnWhitelist(sender.getName())) {
+            sender.sendMessage(ChatColor.YELLOW + "Your are already on the whitelist. Please use the" + ChatColor.GOLD + " /updatestatus " + ChatColor.YELLOW + "command to update your status to play on the server.");
         }
-        if (!playersOnWhitelist.contains(sender.getName())) {
+
+        if (!HandleFiles.isPlayerOnWhitelist(sender.getName())) {
             if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
                 showHelp((Player) sender);
             } else {
@@ -59,7 +61,8 @@ public class JoinCommand implements CommandExecutor {
     }
 
     private void tooManyPasswordTries(CommandSender c) {
-        Bukkit.getBanList(BanList.Type.NAME).addBan(c.getName(), "Too many wrong join password inputs\nPlease write an administrator to appeal!", null, "Server");
-        ((Player) c).kickPlayer("You have been banned from this server because of too many invalid Password inputs.\nPlease write an administrator to appeal!");
+        Bukkit.getBanList(BanList.Type.NAME).addBan(c.getName(), ChatColor.RED + "Too many wrong join password inputs\n" + ChatColor.WHITE + "Please write an administrator to appeal!", null, "Server");
+        ((Player) c).kickPlayer(ChatColor.RED + "You have been banned from this server because of too many invalid Password inputs.\n" + ChatColor.WHITE + "Please write an administrator to appeal!");
+        HandleFiles.updatePlayerStatusToBanned(c.getName());
     }
 }
