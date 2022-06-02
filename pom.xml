@@ -6,7 +6,7 @@
 
     <groupId>io.github.Shotix</groupId>
     <artifactId>CustomWhitelist</artifactId>
-    <version>v0.8-preRelease</version>
+    <version>0.7</version>
     <packaging>jar</packaging>
 
     <name>CustomWhitelist</name>
