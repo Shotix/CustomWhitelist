@@ -1,6 +1,10 @@
 package io.github.shotix.customwhitelist;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Objects;
 
 public final class CustomWhitelist extends JavaPlugin {
 
@@ -16,8 +20,9 @@ public final class CustomWhitelist extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new Listeners(), this);
 
-        getCommand("join").setExecutor(new JoinCommand());
-        getCommand("updateStatus").setExecutor(new UpdateStatusCommand());
+        Objects.requireNonNull(getCommand("join")).setExecutor(new JoinCommand());
+        Objects.requireNonNull(getCommand("updateStatus")).setExecutor(new UpdateStatusCommand());
+        Objects.requireNonNull(getCommand("customWhitelist")).setExecutor(new CustomWhitelistCommands());
     }
 
     @Override
