@@ -1,12 +1,12 @@
 TODO:
-    - Player is now not able to be transferred from the "newPlayer" Status to the "verified" status
-        --> Implementation still needed
+    - Player status can't be reset right now
+    - If a player has been removed from the whitelist the status should be reset to "newPlayer"
 
 TODO Exception Handling:
-    - Handle NumberFormatException (HandleFiles.java)
-    - Handle IOException (HandleFiles.java)
+    - Handle NumberFormatException
+    - Handle IOException
+    - Handle FileNotFoundException (playerJoinTriesTemplate)
 
 
 TODO in the future:
     - Better name for "playerJoinTries"
-    - When a new player joins his name + numberOfTries + status needs to be written into "playerJoinTries"
