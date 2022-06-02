@@ -11,10 +11,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class JoinCommand implements CommandExecutor {
 
-    private final static String joinPassword = "2InchWheeler";
-
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender,@NotNull Command command,@NotNull String label, String[] args) {
         if (!(sender instanceof Player)) {
             sender.sendMessage(ChatColor.RED + "Only players can run this command!");
             return false;
@@ -30,7 +28,7 @@ public class JoinCommand implements CommandExecutor {
 
                 if (!isPlayerOnTries) HandleFiles.handlePutPlayerOnTries(sender.getName());
 
-                if (args[0].matches(joinPassword)){
+                if (args[0].matches(HandleFiles.getPassword())){
                     HandleFiles.updateTries(sender.getName(), 0);
                     HandleFiles.updatePlayerStatusToOnWhitelist(sender.getName());
                     HandleFiles.putNameOnWhitelist(sender.getName());
@@ -51,6 +49,7 @@ public class JoinCommand implements CommandExecutor {
         } else {
             p.sendMessage(ChatColor.YELLOW + "---" + ChatColor.WHITE + " Admin Help Menu " + ChatColor.YELLOW + "---");
             p.sendMessage(ChatColor.GOLD + "\n/join [password]: " + ChatColor.WHITE + "Use this command to register yourself as a valid user on the server. Please replace " + ChatColor.GOLD + "[password]" + ChatColor.WHITE + " with the password given to you by the server administrator.\n");
+            p.sendMessage(ChatColor.GOLD + "\n/customwhitelist setPassword [newPassword]:" + ChatColor.WHITE + "");
         }
     }
 
