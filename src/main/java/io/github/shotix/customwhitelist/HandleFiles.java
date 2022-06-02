@@ -9,6 +9,7 @@ public class HandleFiles {
 
     private final static String whitelistLocation = "whitelist.json";
     private final static String playerJoinTriesLocation = "playerJoinTries.json";
+    private final static String passwordLocation = "customWhitelistPassword.txt";
 
 
     public static boolean isPlayerOnWhitelist(String playerName) {
@@ -28,11 +29,8 @@ public class HandleFiles {
             br.close();
             fr.close();
             return false;
-        }
-        catch (FileNotFoundException fnf) {
+        } catch (IOException fnf) {
             throw new RuntimeException(fnf);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -170,10 +168,8 @@ public class HandleFiles {
             writer.close();
             br.close();
             fr.close();
-        } catch (FileNotFoundException fileNotFoundException) {
+        } catch (IOException fileNotFoundException) {
             throw  new RuntimeException(fileNotFoundException);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -260,7 +256,7 @@ public class HandleFiles {
             String line = br.readLine();
 
             while (line != null) {
-                content = content + line + System.lineSeparator();;
+                content = content + line + System.lineSeparator();
                 if (line.contains(playerName)) {
                     line = br.readLine();
 
@@ -305,7 +301,7 @@ public class HandleFiles {
             String line = br.readLine();
 
             while (line != null) {
-                content = content + line + System.lineSeparator();;
+                content = content + line + System.lineSeparator();
                 if (line.contains(playerName)) {
                     line = br.readLine();
 
@@ -351,7 +347,7 @@ public class HandleFiles {
             String line = br.readLine();
 
             while (line != null) {
-                content = content + line + System.lineSeparator();;
+                content = content + line + System.lineSeparator();
                 if (line.contains(playerName)) {
                     line = br.readLine();
 
@@ -397,7 +393,7 @@ public class HandleFiles {
             String line = br.readLine();
 
             while (line != null) {
-                content = content + line + System.lineSeparator();;
+                content = content + line + System.lineSeparator();
                 if (line.contains(playerName)) {
                     line = br.readLine();
 
@@ -430,5 +426,36 @@ public class HandleFiles {
         } catch (IOException ioException) {
             throw new RuntimeException(ioException);
         }
+    }
+
+    public static void setPassword(String password) {
+        try{
+            FileWriter writer = new FileWriter(passwordLocation);
+            writer.write(password);
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public static String getPassword() {
+        String password = "join";
+
+        try {
+            FileReader fr = new FileReader(passwordLocation);
+            BufferedReader br = new BufferedReader(fr);
+
+            password = br.readLine();
+
+            br.close();
+            fr.close();
+        } catch (FileNotFoundException fileNotFoundException) {
+            setPassword(password);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return password;
     }
 }
