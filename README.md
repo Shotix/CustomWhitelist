@@ -8,15 +8,19 @@ This little project is just a fun project I am currently working on. Please keep
   
  If you find any bugs or want to help feel free to use the Discussion or Issues page to let me know. I'll try to be as active as I can here.
 
+## Download the plugin
+  
+You can download the plugin on the [release page](https://github.com/Shotix/CustomWhitelist/releases "GitHub release page"). Just install it in your plugin folder and reload the running plugins via the `/reload` command.
+  
 ## Available Commands
 
 As a normal player you can run the following commands:
 
-### `"/join [password]"`,
+### `/join [password]`
 
 When a user is joining the server and the new user is currently <b>not</b> on the whitelist his movement ist locked and visibility reduced. In order to play on the server he needs to use the command `"/join [password]"`. He has three tries on logging in with the correct password. If he fails to input the correct password after this three trys he will be permanently banned from the server. This can be reset with the simple `pardon [player]` command.
 
-### `"/updateStatus"`,
+### `/updateStatus`
 
 If you have used the `/join [password]` command you can use the `/updateStatus` command after that to update your status to `joinable`. After this the player will be kicked and he now can rejoin and play with the rest of the server. 
 
