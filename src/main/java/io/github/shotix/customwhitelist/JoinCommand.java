@@ -28,8 +28,8 @@ public class JoinCommand implements CommandExecutor {
 
                 if (!isPlayerOnTries) HandleFiles.handlePutPlayerOnTries(sender.getName());
 
-                String passwordInput = args[0];
-                if (passwordInput.matches(joinPassword)){
+                if (args[0].matches(joinPassword)){
+                    HandleFiles.updatePlayerStatusToOnWhitelist(sender.getName());
                     HandleFiles.putNameOnWhitelist(sender.getName());
                     sender.sendMessage(ChatColor.GREEN + "You have successfully registered yourself\nPlease use the \"/updatestatus\" command to update your status");
                     return true;
@@ -41,7 +41,14 @@ public class JoinCommand implements CommandExecutor {
     }
 
     private void showHelp(@NotNull Player p) {
-        p.sendMessage("HELP MENU NOT AVAILABLE YET");
+        // Check if Admin or User Menu needs to be displayed
+        if (!p.isOp()) {
+            p.sendMessage(ChatColor.YELLOW + "---" + ChatColor.WHITE + " Help Menu " + ChatColor.YELLOW + "---");
+            p.sendMessage(ChatColor.GOLD + "\n/join [password]: " + ChatColor.WHITE + "Use this command to register yourself as a valid user on the server. Please replace " + ChatColor.GOLD + "[password]" + ChatColor.WHITE + " with the password given to you by the server administrator.\n");
+        } else {
+            p.sendMessage(ChatColor.YELLOW + "---" + ChatColor.WHITE + " Admin Help Menu " + ChatColor.YELLOW + "---");
+            p.sendMessage(ChatColor.GOLD + "\n/join [password]: " + ChatColor.WHITE + "Use this command to register yourself as a valid user on the server. Please replace " + ChatColor.GOLD + "[password]" + ChatColor.WHITE + " with the password given to you by the server administrator.\n");
+        }
     }
 
     private void invalidPassword(CommandSender c) {
