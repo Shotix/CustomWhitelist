@@ -104,18 +104,8 @@ public class HandleFiles {
             writer.close();
             br.close();
             fr.close();
-        } catch (FileNotFoundException fileNotFoundException) {
-            try {
-                File file = new File(playerJoinTriesLocation);
-                BufferedWriter writer = null;
-                writer = new BufferedWriter(new FileWriter(playerJoinTriesLocation));
-                writer.write("[]");
+        } catch (FileNotFoundException ignore) {
 
-                writer.close();
-                handleJoinTries(playerName);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
         } catch (NumberFormatException numberFormatException) {
             throw new RuntimeException(numberFormatException);
             // TODO: Handle NumberFormatException
@@ -147,7 +137,17 @@ public class HandleFiles {
             br.close();
             fr.close();
         } catch (FileNotFoundException fileNotFoundException) {
+            try {
+                File file = new File(playerJoinTriesLocation);
+                BufferedWriter writer = null;
+                writer = new BufferedWriter(new FileWriter(playerJoinTriesLocation));
+                writer.write("[]");
 
+                writer.close();
+                isPlayerOnTries(player);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         } catch (IOException e) {
 
         }
@@ -233,11 +233,93 @@ public class HandleFiles {
         }
     }
 
-    public static void updatePlayerStatusToOnWhitelist(Player player) {
+    public static void updatePlayerStatusToOnWhitelist(String playerName) {
+        try {
+            //Open File
+            FileReader fr = new FileReader(playerJoinTriesLocation);
+            BufferedReader br = new BufferedReader(fr);
 
+            //Find correct line and reset tries + change status
+            String content = "";
+            String line = br.readLine();
+
+            while (line != null) {
+                content = content + line + System.lineSeparator();;
+                if (line.contains(playerName)) {
+                    line = br.readLine();
+
+                    // Reset tries and write to content
+                    String cString = line;
+                    cString = cString.replace("\"tries\":", "");
+                    cString = cString.replaceAll("\"", "");
+                    cString = cString.replaceAll("\\s+", "");
+                    line = line.replace(cString, "0");
+                    content = content + line + System.lineSeparator();
+
+                    line = br.readLine();
+
+                    // Change status and write to content
+                    line = line.replace("newPlayer", "onWhitelist");
+                    content = content + line + System.lineSeparator();
+                }
+                line = br.readLine();
+            }
+
+            // Write new content to file
+            FileWriter writer = new FileWriter(playerJoinTriesLocation);
+            writer.write(content);
+
+            writer.close();
+            br.close();
+            fr.close();
+
+        } catch (IOException ioException) {
+            throw new RuntimeException(ioException);
+        }
     }
 
-    public static void updatePlayerStatusToVerified(Player player) {
+    public static void updatePlayerStatusToVerified(String playerName) {
+        try {
+            //Open File
+            FileReader fr = new FileReader(playerJoinTriesLocation);
+            BufferedReader br = new BufferedReader(fr);
 
+            //Find correct line and reset tries + change status
+            String content = "";
+            String line = br.readLine();
+
+            while (line != null) {
+                content = content + line + System.lineSeparator();;
+                if (line.contains(playerName)) {
+                    line = br.readLine();
+
+                    // Reset tries and write to content
+                    String cString = line;
+                    cString = cString.replace("\"tries\":", "");
+                    cString = cString.replaceAll("\"", "");
+                    cString = cString.replaceAll("\\s+", "");
+                    line = line.replace(cString, "0");
+                    content = content + line + System.lineSeparator();
+
+                    line = br.readLine();
+
+                    // Change status and write to content
+                    line = line.replace("onWhitelist", "verified");
+                    content = content + line + System.lineSeparator();
+                }
+                line = br.readLine();
+            }
+
+            // Write new content to file
+            FileWriter writer = new FileWriter(playerJoinTriesLocation);
+            writer.write(content);
+
+            writer.close();
+            br.close();
+            fr.close();
+
+        } catch (IOException ioException) {
+            throw new RuntimeException(ioException);
+        }
     }
 }
