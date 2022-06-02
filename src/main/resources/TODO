@@ -1,12 +1,6 @@
 TODO:
-    - Player is now not able to be transferred from the "newPlayer" Status to the "verified" status
-        --> Implementation still needed
-
-TODO Exception Handling:
-    - Handle NumberFormatException (HandleFiles.java)
-    - Handle IOException (HandleFiles.java)
-
+    - Admin commands
+        - UserSet join password
 
 TODO in the future:
     - Better name for "playerJoinTries"
-    - When a new player joins his name + numberOfTries + status needs to be written into "playerJoinTries"
