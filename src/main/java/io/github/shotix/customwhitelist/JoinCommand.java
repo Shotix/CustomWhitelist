@@ -29,6 +29,7 @@ public class JoinCommand implements CommandExecutor {
                 if (!isPlayerOnTries) HandleFiles.handlePutPlayerOnTries(sender.getName());
 
                 if (args[0].matches(joinPassword)){
+                    HandleFiles.updateTries(sender.getName(), 0);
                     HandleFiles.updatePlayerStatusToOnWhitelist(sender.getName());
                     HandleFiles.putNameOnWhitelist(sender.getName());
                     sender.sendMessage(ChatColor.GREEN + "You have successfully registered yourself\nPlease use the \"/updatestatus\" command to update your status");
