@@ -34,7 +34,6 @@ public class UpdateStatusCommand implements CommandExecutor {
             sender.sendMessage(ChatColor.YELLOW + "Your name is currently not on the whitelist.\n Please use the " + ChatColor.GREEN + "/join [password]" + ChatColor.YELLOW + " to get added to the whitelist!");
             return false;
         }
-        HandleFiles.updatePlayerStatusToVerified(sender.getName());
         clearPotionEffects((Player) sender);
         ((Player) sender).setGameMode(GameMode.SURVIVAL);
         ((Player) sender).kickPlayer(ChatColor.GREEN + "You are now verified and will be able to play on the Server. Have fun!");
