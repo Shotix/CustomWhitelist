@@ -12,6 +12,13 @@ If you find any bugs or want to help feel free to use the Discussion or Issues p
 
 You can download the plugin on the [release page](https://github.com/Shotix/CustomWhitelist/releases "GitHub release page"). Just install it in your plugin folder and reload the running plugins via the `/reload` command. Please make sure to always use the latest version.
 
+## Supported Minecraft Bukkit Versions
+  
+| Version | Supported          |
+| ------- | ------------------ |
+| >1.18   | :white_check_mark: |
+| <1.18   | Not tested         |
+  
 ## Available Commands
 
 **As a normal player you can run the following commands:**
