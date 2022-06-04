@@ -15,6 +15,9 @@ public class CustomWhitelistCommands implements CommandExecutor{
             sender.sendMessage(ChatColor.RED + "This command can only be used by administrators");
             return false;
         }
+        if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
+            showHelp((Player) sender);
+        }
         if (args[0].toLowerCase().matches("setpassword")) {
             if (args.length == 1) {
                 sender.sendMessage(ChatColor.YELLOW + "Please enter a password");
