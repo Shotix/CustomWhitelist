@@ -28,7 +28,7 @@ public class UpdateStatusCommand implements CommandExecutor {
         return true;
     }
 
-    public void clearPotionEffects(Player p) {
+    public static void clearPotionEffects(Player p) {
         for(PotionEffect effect : p.getActivePotionEffects())
         {
             p.removePotionEffect(effect.getType());
