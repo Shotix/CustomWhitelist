@@ -186,7 +186,7 @@ public class HandleFiles {
         }
     }
 
-    private static String resetTries(String content, String line) {
+    private static @NotNull String resetTries(String content, String line) {
         // Reset tries and write to content
         String cString = line;
         cString = cString.replace("\"tries\":", "");
@@ -335,7 +335,8 @@ public class HandleFiles {
                     line = br.readLine();
 
                     // Change status and write to content
-                    line = line.replace("newPlayer", "banned");
+                    if (line.contains("newPlayer")) line = line.replace("newPlayer", "banned");
+                    else if (line.contains("onWhitelist")) line = line.replace("onWhitelist", "banned");
                     content = content + line + System.lineSeparator();
                 }
                 line = br.readLine();
@@ -371,7 +372,9 @@ public class HandleFiles {
                     line = br.readLine();
 
                     // Change status and write to content
-                    line = line.replace("banned", "newPlayer");
+                    if (line.contains("banned")) line = line.replace("banned", "newPlayer");
+                    else if (line.contains("verified")) line = line.replace("verified", "newPlayer");
+                    else if (line.contains("onWhitelist")) line = line.replace("onWhitelist", "newPlayer");
                     content = content + line + System.lineSeparator();
                 }
                 line = br.readLine();
@@ -389,6 +392,36 @@ public class HandleFiles {
         } catch (IOException ioException) {
             throw new RuntimeException(ioException);
         }
+    }
+
+    public static String getPlayerStatus(String playerName) {
+
+        try {
+            //Open File
+            FileReader fr = new FileReader(playerJoinTriesLocation);
+            BufferedReader br = new BufferedReader(fr);
+
+            //Find correct line and reset tries + change status
+            String line = br.readLine();
+
+            while (line != null) {
+                if (line.contains(playerName)) {
+                    line = br.readLine();
+                    line = br.readLine();
+
+                    line = line.replace("\"status\":", "");
+                    line = line.replaceAll("\\s+", "");
+                    line = line.replaceAll("\"", "");
+                    return line;
+                }
+                line = br.readLine();
+            }
+        } catch (FileNotFoundException fileNotFoundException) {
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return "error";
     }
 
     public static void setPassword(String password) {
