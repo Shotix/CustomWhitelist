@@ -1,6 +1,7 @@
 package io.github.shotix.customwhitelist;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -12,54 +13,69 @@ public class HandleFiles {
     private final static String passwordLocation = "customWhitelistPassword.txt";
 
 
-    public static boolean isPlayerOnWhitelist(String playerName) {
+    private static String openFile(String filename) {
+        String fileContent = "";
         try {
-            FileReader fr = new FileReader(whitelistLocation);
+            FileReader fr = new FileReader(filename);
             BufferedReader br = new BufferedReader(fr);
 
             String line = br.readLine();
             while (line != null) {
-                if (line.contains(playerName)) {
-                    br.close();
-                    fr.close();
-                    return true;
-                }
+                fileContent = fileContent + line + System.lineSeparator();
                 line = br.readLine();
             }
             br.close();
             fr.close();
-            return false;
-        } catch (IOException fnf) {
-            throw new RuntimeException(fnf);
+        } catch (FileNotFoundException fileNotFoundException) {
+            if (filename == whitelistLocation) noWhitelist();
+            else if (filename == playerJoinTriesLocation) noPlayerJoinTries();
+            else if (filename == passwordLocation) noPasswordLocation();
+            else throw new RuntimeException(fileNotFoundException);
+        } catch (IOException ioException) {
+            throw new RuntimeException(ioException);
         }
+        return fileContent;
+    }
+
+    private static void noWhitelist() {
+        Bukkit.broadcastMessage(ChatColor.RED + "NO WHITELIST DETECTED. SERVER IS STOPPING.\nPLEASE MESSAGE AN ADMINISTRATOR");
+        Bukkit.shutdown();
+    }
+
+    private static void noPlayerJoinTries() {
+        File file = new File(playerJoinTriesLocation);
+        writeToFile(playerJoinTriesLocation, "[]");
+    }
+
+    private static void noPasswordLocation() {
+        File file = new File(passwordLocation);
+        writeToFile(passwordLocation, "join");
+
+    }
+
+    private static void writeToFile(String filename, String content) {
+        try {
+            FileWriter writer = new FileWriter(filename);
+
+            writer.write(content);
+            writer.close();
+        } catch (IOException ioException) {
+            throw new RuntimeException(ioException);
+        }
+    }
+
+    public static boolean isPlayerOnWhitelist(String playerName) {
+        String content = openFile(whitelistLocation);
+        if (content.contains(playerName)) return true;
+        return false;
     }
 
     public static boolean isPlayerOnJoinList(String playerName) {
-        try {
-            FileReader fr = new FileReader(playerJoinTriesLocation);
-            BufferedReader br = new BufferedReader(fr);
-
-            String line = br.readLine();
-            while (line != null) {
-                if (line.contains(playerName)) {
-                    br.readLine();
-                    if (br.readLine().contains("verified")) {
-                        fr.close();
-                        br.close();
-                        return true;
-                    }
-                }
-                line = br.readLine();
-            }
-            br.close();
-            fr.close();
-        } catch (FileNotFoundException ignore) {
-            // Ignored
-        } catch (IOException ioException) {
-            //TODO: Handle IOException
-        }
+        String content = openFile(playerJoinTriesLocation);
+        if (content.contains(playerName)) return true;
         return false;
     }
+
     public static boolean isPlayerStatusBanned(String playerName) {
         try {
             FileReader fr = new FileReader(playerJoinTriesLocation);
@@ -119,10 +135,8 @@ public class HandleFiles {
                 line = br.readLine();
             }
 
-            FileWriter writer = new FileWriter(playerJoinTriesLocation);
-            writer.write(content);
+            writeToFile(playerJoinTriesLocation, content);
 
-            writer.close();
             br.close();
             fr.close();
         } catch (FileNotFoundException ignore) {
@@ -163,14 +177,25 @@ public class HandleFiles {
                 line = br.readLine();
             }
 
-            FileWriter writer = new FileWriter(playerJoinTriesLocation);
-            writer.write(content);
-            writer.close();
+            writeToFile(playerJoinTriesLocation, content);
+
             br.close();
             fr.close();
         } catch (IOException fileNotFoundException) {
             throw  new RuntimeException(fileNotFoundException);
         }
+    }
+
+    private static String resetTries(String content, String line) {
+        // Reset tries and write to content
+        String cString = line;
+        cString = cString.replace("\"tries\":", "");
+        cString = cString.replaceAll("\"", "");
+        cString = cString.replaceAll("\\s+", "");
+        line = line.replace(cString, "0");
+        content = content + line + System.lineSeparator();
+
+        return content;
     }
 
     public static void handlePutPlayerOnTries(String player) {
@@ -179,36 +204,7 @@ public class HandleFiles {
     }
 
     public static boolean isPlayerOnTries(String player) {
-        try {
-            FileReader fr = new FileReader(playerJoinTriesLocation);
-            BufferedReader br = new BufferedReader(fr);
-
-            String line = br.readLine();
-
-            while (line != null) {
-                if (line.contains(player)){
-                    br.close();
-                    fr.close();
-                    return true;
-                }
-                line = br.readLine();
-            }
-
-            br.close();
-            fr.close();
-        } catch (FileNotFoundException fileNotFoundException) {
-            try {
-                File file = new File(playerJoinTriesLocation);
-                FileWriter writer = new FileWriter(playerJoinTriesLocation);
-                writer.write("[]");
-                writer.close();
-                isPlayerOnTries(player);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        if (openFile(playerJoinTriesLocation).contains(player)) return true;
         return false;
     }
 
@@ -232,12 +228,9 @@ public class HandleFiles {
                 newLine = br.readLine();
             }
 
-            FileWriter writer = new FileWriter(playerJoinTriesLocation);
-
             newOutput = newOutput.replace("[", "[" + System.lineSeparator() + template + System.lineSeparator());
 
-            writer.write(newOutput);
-            writer.close();
+            writeToFile(playerJoinTriesLocation, newOutput);
             br.close();
             fr.close();
         } catch (IOException e) {
@@ -261,12 +254,7 @@ public class HandleFiles {
                     line = br.readLine();
 
                     // Reset tries and write to content
-                    String cString = line;
-                    cString = cString.replace("\"tries\":", "");
-                    cString = cString.replaceAll("\"", "");
-                    cString = cString.replaceAll("\\s+", "");
-                    line = line.replace(cString, "0");
-                    content = content + line + System.lineSeparator();
+                    content = resetTries(content, line);
 
                     line = br.readLine();
 
@@ -278,10 +266,7 @@ public class HandleFiles {
             }
 
             // Write new content to file
-            FileWriter writer = new FileWriter(playerJoinTriesLocation);
-            writer.write(content);
-
-            writer.close();
+            writeToFile(playerJoinTriesLocation, content);
             br.close();
             fr.close();
 
@@ -305,13 +290,7 @@ public class HandleFiles {
                 if (line.contains(playerName)) {
                     line = br.readLine();
 
-                    // Reset tries and write to content
-                    String cString = line;
-                    cString = cString.replace("\"tries\":", "");
-                    cString = cString.replaceAll("\"", "");
-                    cString = cString.replaceAll("\\s+", "");
-                    line = line.replace(cString, "0");
-                    content = content + line + System.lineSeparator();
+                    content = resetTries(content, line);
 
                     line = br.readLine();
 
@@ -351,13 +330,7 @@ public class HandleFiles {
                 if (line.contains(playerName)) {
                     line = br.readLine();
 
-                    // Reset tries and write to content
-                    String cString = line;
-                    cString = cString.replace("\"tries\":", "");
-                    cString = cString.replaceAll("\"", "");
-                    cString = cString.replaceAll("\\s+", "");
-                    line = line.replace(cString, "0");
-                    content = content + line + System.lineSeparator();
+                    content = resetTries(content, line);
 
                     line = br.readLine();
 
@@ -369,11 +342,7 @@ public class HandleFiles {
             }
 
             // Write new content to file
-            FileWriter writer = new FileWriter(playerJoinTriesLocation);
-            writer.write(content);
-
-            // Close Reader/Writer
-            writer.close();
+            writeToFile(playerJoinTriesLocation, content);
             br.close();
             fr.close();
 
@@ -397,13 +366,7 @@ public class HandleFiles {
                 if (line.contains(playerName)) {
                     line = br.readLine();
 
-                    // Reset tries and write to content
-                    String cString = line;
-                    cString = cString.replace("\"tries\":", "");
-                    cString = cString.replaceAll("\"", "");
-                    cString = cString.replaceAll("\\s+", "");
-                    line = line.replace(cString, "0");
-                    content = content + line + System.lineSeparator();
+                    content = resetTries(content, line);
 
                     line = br.readLine();
 
@@ -429,33 +392,21 @@ public class HandleFiles {
     }
 
     public static void setPassword(String password) {
-        try{
-            FileWriter writer = new FileWriter(passwordLocation);
-            writer.write(password);
-            writer.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+        writeToFile(passwordLocation, password);
     }
 
     public static String getPassword() {
-        String password = "join";
-
         try {
-            FileReader fr = new FileReader(passwordLocation);
-            BufferedReader br = new BufferedReader(fr);
-
-            password = br.readLine();
-
-            br.close();
-            fr.close();
+        FileReader fr = new FileReader(passwordLocation);
+        BufferedReader br = new BufferedReader(fr);
+            try {
+                return br.readLine();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         } catch (FileNotFoundException fileNotFoundException) {
-            setPassword(password);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            noPasswordLocation();
         }
-
-        return password;
+        return "join";
     }
 }
